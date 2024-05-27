@@ -1,0 +1,40 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  
+}
+
+* {
+  font-family: "Nunito Sans", sans-serif;
+}
+
+:root {
+  --primary: #181846;
+  --secondary: #ff5722;
+}
+
+.p-tabmenu-nav .p-reset > :nth-of-type(3) {
+  display: none;
+}
+
+.p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
+  background: var(--primary);
+  border-radius: 0;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+  border-color: transparent transparent #C4C5D7 transparent;
+  color: #C4C5D7;
+  border-bottom-width: 3px;
+}
+
+.p-tabmenu .p-tabmenu-nav .p-tabmenuitem.p-highlight .p-menuitem-link {
+  color: white;
+  border-color: var(--secondary);
+}
+
+.p-tabmenu-nav.p-reset li:nth-child(3) > a {
+  border-bottom-color: transparent !important;
+}
