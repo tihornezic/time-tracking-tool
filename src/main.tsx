@@ -8,12 +8,6 @@ import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
 import { BrowserRouter } from "react-router-dom";
 
-const root = document.documentElement;
-const style = getComputedStyle(root);
-const secondary = style.getPropertyValue("--secondary");
-
-console.log(secondary)
-
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>

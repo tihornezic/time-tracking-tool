@@ -1,4 +1,4 @@
-import Heading, { HEADING_HEIGHT } from "./Heading";
+import Heading, { NAVIGATION_HEIGHT } from "./navigation/Navigation";
 import { Outlet } from "react-router-dom";
 
 const Layout = () => {
@@ -9,7 +9,7 @@ const Layout = () => {
       <div
         className="flex align-items-center justify-content-center w-full"
         style={{
-          minHeight: `calc(100vh - ${HEADING_HEIGHT})`,
+          minHeight: `calc(100vh - ${NAVIGATION_HEIGHT})`,
         }}
       >
         <Outlet />

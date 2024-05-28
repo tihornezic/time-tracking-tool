@@ -1,10 +1,12 @@
+import { User } from "firebase/auth";
 import { EnumAuth } from "./types/types";
-import Auth from "./views/Auth";
-import History from "./views/History";
-import Layout from "./views/Layout";
-import Trackers from "./views/Trackers";
+import AuthWrapper from "./views/auth/AuthWrapper";
+import History from "./views/history/History";
+import Layout from "./views/layout/Layout";
+import ProtectedRoute from "./views/protected-route/ProtectedRoute";
+import Trackers from "./views/trackers/Trackers";
 
-const router = () => [
+const router = (user: User | null) => [
   {
     path: "/",
     element: <Layout />,
@@ -16,33 +18,28 @@ const router = () => [
       },
       {
         index: true,
-        // path: 'login',
-        element: <Auth authType={EnumAuth.login} />,
+        element: <AuthWrapper authType={EnumAuth.login} />,
       },
       {
         path: "register",
-        element: <Auth authType={EnumAuth.register} />,
+        element: <AuthWrapper authType={EnumAuth.register} />,
       },
       {
         path: "trackers",
-        element: <Trackers />,
+        element: (
+          <ProtectedRoute condition={user === null} to="/">
+            <Trackers />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "history",
-        element: <History />,
+        element: (
+          <ProtectedRoute condition={user === null} to="/">
+            <History />
+          </ProtectedRoute>
+        ),
       },
-      // {
-      //   path: "play",
-      //   element: (
-      //     <ProtectedRoute condition={userName === ""} to="/">
-      //       <PlayWrapper />
-      //     </ProtectedRoute>
-      //   ),
-      // },
-      // {
-      //   path: "high-scores",
-      //   element: <HighScores />,
-      // },
     ],
   },
 ];

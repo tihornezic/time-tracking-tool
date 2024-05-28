@@ -1,17 +1,12 @@
-import logo from "../assets/logo.svg";
-import COLORS from "../constants/colors";
-import useAuthStateListener from "../api/auth/useAuthStateListener";
-import { Button } from "primereact/button";
-import useSignOut from "../api/auth/useSignOut";
-import Tabs from "../components/tabs/Tabs";
+import logo from "../../../assets/logo.svg";
+import COLORS from "../../../constants/colors";
+import useAuthStateListener from "../../../api/auth/useAuthStateListener";
+import Tabs from "../../../components/tabs/Tabs";
 
-export const HEADING_HEIGHT = "6.25rem";
+export const NAVIGATION_HEIGHT = "6.25rem";
 
-const Heading = () => {
-  const { user, loading } = useAuthStateListener();
-  const { signOut, isSigningOut, error } = useSignOut();
-
-  console.log("user", user);
+const Navigation = () => {
+  const { user } = useAuthStateListener();
 
   return (
     <div
@@ -19,7 +14,7 @@ const Heading = () => {
       style={{
         backgroundColor: COLORS.primary,
         color: "white",
-        height: HEADING_HEIGHT,
+        height: NAVIGATION_HEIGHT,
       }}
     >
       {/* devot logo & tracking tool text */}
@@ -45,4 +40,4 @@ const Heading = () => {
   );
 };
 
-export default Heading;
+export default Navigation;

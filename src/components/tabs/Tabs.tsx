@@ -2,33 +2,19 @@ import { MenuItem } from "primereact/menuitem";
 import { TabMenu } from "primereact/tabmenu";
 import { useState } from "react";
 import useSignOut from "../../api/auth/useSignOut";
-import { useLocation, useNavigate } from "react-router-dom";
-
-const tabMenuStyles = {
-  activeTab: {
-    backgroundColor: "#4caf50",
-    color: "white",
-  },
-  inactiveTab: {
-    backgroundColor: "transparent",
-    color: "inherit",
-  },
-};
+import { useNavigate } from "react-router-dom";
 
 const items: MenuItem[] = [
-  { label: "trackers", icon: "pi pi-clock" },
-  { label: "history", icon: "pi pi-history" },
+  { label: "Trackers", icon: "pi pi-clock" },
+  { label: "History", icon: "pi pi-history" },
   { label: "Logout", icon: "pi pi-power-off" },
 ];
 
 const Tabs = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  console.log(location.pathname);
+  const { signOut } = useSignOut();
 
   const [activeIndex, setActiveIndex] = useState<number>(0);
-  const { signOut, isSigningOut, error } = useSignOut();
 
   const handleOnTabChange = (index: number) => {
     setActiveIndex(index);
