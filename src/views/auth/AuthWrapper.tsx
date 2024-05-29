@@ -7,6 +7,7 @@ import useRegister from "../../api/auth/useRegister";
 import useLogin from "../../api/auth/useLogin";
 import AuthForm from "./components/AuthForm";
 import AlreadyHaveAccount from "./components/AlreadyHaveAccount";
+import useAuthStateListener from "../../api/auth/useAuthStateListener";
 
 type AuthWrapperProps = {
   authType: EnumAuth;
@@ -21,6 +22,9 @@ export type AuthFormData = {
 const AuthWrapper = ({ authType }: AuthWrapperProps) => {
   const navigate = useNavigate();
   const { key } = useLocation();
+  const { user } = useAuthStateListener();
+
+  if (user !== null) navigate("/trackers");
 
   const {
     register,

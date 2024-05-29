@@ -1,0 +1,9 @@
+.p-datatable .p-datatable-thead > tr > th {
+  background-color: var(--tertiary);
+}
+
+.p-column-title {
+  font-weight: 700;
+  color: #0C0D25;
+  size: 1.125rem;
+}

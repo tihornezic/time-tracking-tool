@@ -12,6 +12,7 @@ html, body {
 :root {
   --primary: #181846;
   --secondary: #ff5722;
+  --tertiary: #F9F9FD;
 }
 
 .p-tabmenu-nav .p-reset > :nth-of-type(3) {
