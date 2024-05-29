@@ -7,9 +7,9 @@ const Counter = ({
   started,
   onSecondPass,
 }: {
-  secs: number;
-  started: boolean;
-  onSecondPass: (seconds: any) => void;
+  secs?: number;
+  started?: boolean;
+  onSecondPass?: (seconds: any) => void;
 }) => {
   const [seconds, setSeconds] = useState(secs || 0);
   const [milliseconds, setMilliseconds] = useState(0);
@@ -19,7 +19,7 @@ const Counter = ({
     secondsRef.current = window.setInterval(() => {
       setSeconds((prev) => {
         const newSeconds = prev + 1;
-        onSecondPass(newSeconds);
+        onSecondPass?.(newSeconds);
         return newSeconds;
       });
     }, 1000);

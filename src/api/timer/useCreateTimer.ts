@@ -13,19 +13,18 @@ const useCreateTimer = () => {
       const auth = getAuth();
       const user = auth.currentUser;
 
-      console.log("user", user);
-
       const userDocRef = doc(db, "users", user!.uid);
-
-      console.log(userDocRef);
 
       // this is actually create new timer!
       await updateDoc(userDocRef, {
         timers: arrayUnion({
           id: uuidv4(),
           description: description,
-          date: Date.now(),
+          startDate: Date.now(),
+          endDate: null,
           time: 0,
+          // status: active | closed
+          status: "active",
         }),
       });
     } catch (error) {
