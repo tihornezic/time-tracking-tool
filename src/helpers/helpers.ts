@@ -55,6 +55,6 @@ export const filterByStartAndEndDate = (
 
 export const filterByDescription = (array: any, description: string) => {
   return array.filter((timer) =>
-    timer.description.includes(description.toLowerCase())
+    timer.description.toLowerCase().includes(description.toLowerCase())
   );
 };

@@ -32,6 +32,7 @@ const useCounter = () => {
     setIsInProgress(false);
     clearInterval(secondsRef.current);
     secondsRef.current = 0;
+    counterRef.current = 0;
 
     clearInterval(interval);
   };

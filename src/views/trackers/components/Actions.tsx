@@ -2,9 +2,11 @@ import { Button } from "primereact/button";
 import COLORS from "../../../constants/colors";
 
 type ActionProps = {
+  array?: any;
   isInProgress: boolean;
   rowData: any;
   handleOnStartCounter: (rowData: any) => void;
+  // handleOnPauseCounter: (rowData: any) => void;
   handleOnPauseCounter: () => void;
   handleOnStopTracker: (rowData: any) => void;
   handleOnEdit: (rowData: any) => void;
@@ -12,6 +14,7 @@ type ActionProps = {
 };
 
 const Actions = ({
+  array,
   isInProgress,
   rowData,
   handleOnStartCounter,
@@ -23,7 +26,13 @@ const Actions = ({
   return (
     <div>
       <Button
-        icon={`pi ${isInProgress ? "pi-pause-circle" : "pi-play-circle"}`}
+        // icon={`pi ${isInProgress ? "pi-pause-circle" : "pi-play-circle"}`}
+        icon={`pi ${
+          rowData.status === "in_progress"
+            ? "pi-pause-circle"
+            : "pi-play-circle"
+        }`}
+        disabled={rowData.status === "disabled"}
         className="p-button-rounded p-button-text"
         size="large"
         style={{ color: COLORS.secondary }}
@@ -48,6 +57,7 @@ const Actions = ({
         className="p-button-rounded p-button-text"
         size="large"
         style={{ color: "#5F6B8A" }}
+        disabled={isInProgress}
         onClick={() => handleOnEdit(rowData)}
       />
 
@@ -55,6 +65,7 @@ const Actions = ({
         icon="pi pi-trash"
         className="p-button-rounded p-button-text text-xl"
         style={{ color: "#5F6B8A" }}
+        disabled={isInProgress}
         onClick={() => handleOnDelete(rowData)}
       />
     </div>

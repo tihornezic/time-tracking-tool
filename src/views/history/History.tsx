@@ -9,6 +9,8 @@ import { ConfirmDialog } from "primereact/confirmdialog";
 import useUpdateTimer from "../../api/timer/useUpdateTimer";
 import TimerDialogEditor from "../trackers/components/TimerDialogEditor";
 import Filters from "./components/Filter";
+import CustomPaginator from "../../components/custom-paginator/CustomPaginator";
+import usePaginate from "../../api/timer/usePaginate";
 
 const columns = (handleOnEdit: any, handleOnDelete: any) => [
   <Column
@@ -36,6 +38,8 @@ const columns = (handleOnEdit: any, handleOnDelete: any) => [
     )}
   />,
 ];
+
+const PAGE_SIZE = 3;
 
 const History = () => {
   const { get } = useGetTimers();
@@ -76,6 +80,11 @@ const History = () => {
     getHistoryTrackers();
   }, []);
 
+  const { data, totalRecords, currentPage, onPageChange } = usePaginate(
+    historyTrackers,
+    PAGE_SIZE
+  );
+
   return (
     <div className="flex flex-column w-8">
       <h3 className="text-2xl mb-7">Trackers History</h3>
@@ -93,7 +102,6 @@ const History = () => {
       )}
 
       <ConfirmDialog
-        // group="declarative"
         visible={isDeleteDialogVisible}
         onHide={() => setIsDeleteDialogVisible(false)}
         message="Are you sure you want to proceed?"
@@ -112,8 +120,16 @@ const History = () => {
 
       <CustomDataTable
         className="mt-6"
-        value={historyTrackers}
+        value={data}
         columns={columns(handleOnEdit, handleOnDelete)}
+      />
+
+      <CustomPaginator
+        className="mt-8"
+        first={currentPage * PAGE_SIZE}
+        rows={3}
+        totalRecords={totalRecords}
+        onPageChange={onPageChange}
       />
     </div>
   );

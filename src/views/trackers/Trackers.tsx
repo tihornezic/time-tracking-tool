@@ -1,6 +1,5 @@
 import { Column } from "primereact/column";
 import { useEffect, useState } from "react";
-import { Paginator } from "primereact/paginator";
 import useGetTimers from "../../api/timer/useGetTimers";
 import useUpdateTimer from "../../api/timer/useUpdateTimer";
 import useCounter from "../../hooks/useCounter";
@@ -11,17 +10,22 @@ import TimerDialogEditor from "./components/TimerDialogEditor";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { formatTime } from "../../helpers/helpers";
 import CustomDataTable from "../../components/custon-data-table/CustomDataTable";
+import CustomPaginator from "../../components/custom-paginator/CustomPaginator";
+import usePaginate from "../../api/timer/usePaginate";
+
+const PAGE_SIZE = 3;
 
 const Trackers = () => {
   const { startCounter, stopCounter, isInProgress } = useCounter();
-
-  const [trackers, setTrackers] = useState<any>([]);
-
   const { get } = useGetTimers();
   const { update } = useUpdateTimer();
 
-  const [first, setFirst] = useState(0);
-  const [rows, setRows] = useState(10);
+  const [trackers, setTrackers] = useState<any>([]);
+
+  const { data, totalRecords, currentPage, onPageChange } = usePaginate(
+    trackers,
+    PAGE_SIZE
+  );
 
   const [isTimerDialogCreateVisible, setIsTimerDialogCreateVisible] =
     useState(false);
@@ -34,32 +38,25 @@ const Trackers = () => {
   const [rowToEdit, setRowToEdit] = useState(10);
   const [rowToDelete, setRowToDelete] = useState<any>();
 
-  const onPageChange = (event: any) => {
-    setFirst(event.first);
-    setRows(event.rows);
-  };
+  const [key, setKey] = useState(0);
 
-  const handleUpdateUi = (rowData: any, seconds: number) => {
-    // target which element in the array to update
-    // TODO: make this calculation beforehand, not on every second pass
-    const itemIndex = trackers.findIndex((item: any) => item.id === rowData.id);
+  const handleOnSecondPass = (
+    rowData: any,
+    updatedItems: any,
+    seconds: number,
+    itemIndex: number
+  ) => {
+    const copy = [...updatedItems];
 
-    if (itemIndex === -1) {
-      return;
-    }
+    console.log("rowData", rowData);
 
-    const updatedItems = [...trackers];
-
-    updatedItems[itemIndex] = {
-      ...updatedItems[itemIndex],
+    copy[itemIndex] = {
+      ...copy[itemIndex],
       time: seconds,
+      // status: "in_progress",
     };
 
-    setTrackers(updatedItems);
-  };
-
-  const handleOnSecondPass = (rowData: any, seconds: number) => {
-    handleUpdateUi(rowData, seconds);
+    setTrackers(copy);
 
     if (seconds === 1) {
       // if seconds is 0, treat the "old" value differently (you can adjust this logic as needed)
@@ -77,9 +74,45 @@ const Trackers = () => {
   };
 
   const handleOnStartCounter = (rowData: any) => {
-    startCounter(rowData.time, (seconds) => {
-      handleOnSecondPass(rowData, seconds);
+    const itemIndex = trackers.findIndex((item: any) => item.id === rowData.id);
+
+    if (itemIndex === -1) {
+      return;
+    }
+
+    const updatedItems = trackers.map((tracker, index) => {
+      if (index === itemIndex) {
+        return {
+          ...tracker,
+          status: "in_progress",
+        };
+      } else {
+        return {
+          ...tracker,
+          status: "disabled",
+        };
+      }
     });
+
+    setTrackers(updatedItems);
+
+    startCounter(rowData.time, (seconds) => {
+      console.log("seconds", seconds);
+      handleOnSecondPass(rowData, updatedItems, seconds, itemIndex);
+    });
+  };
+
+  const handleOnPauseCounter = () => {
+    stopCounter();
+
+    const trckrs = trackers.map((tracker) => {
+      return {
+        ...tracker,
+        status: "active",
+      };
+    });
+
+    setTrackers(trckrs);
   };
 
   const handleOnStopTracker = (rowData: any) => {
@@ -89,6 +122,24 @@ const Trackers = () => {
     });
 
     getTrackers();
+  };
+
+  const handleOnStopAll = () => {
+    trackers.forEach((tracker) =>
+      update({
+        oldObj: { ...tracker },
+      })
+    );
+
+    trackers.forEach((tracker) =>
+      update({
+        oldObj: undefined,
+        newObj: { ...tracker, status: "closed" },
+      })
+    );
+
+    getTrackers();
+    // setKey((prevKey) => prevKey + 1);
   };
 
   const handleOnEdit = (rowData: any) => {
@@ -123,6 +174,7 @@ const Trackers = () => {
           isTimerDialogEditorVisible={isTimerDialogEditVisible}
           setIsTimerDialogEditorVisible={setIsTimerDialogEditVisible}
           onSuccess={() => {
+            stopCounter();
             getTrackers();
             setIsTimerDialogEditVisible(false);
           }}
@@ -134,6 +186,7 @@ const Trackers = () => {
           isTimerDialogEditorVisible={isTimerDialogCreateVisible}
           setIsTimerDialogEditorVisible={setIsTimerDialogCreateVisible}
           onSuccess={() => {
+            stopCounter();
             getTrackers();
             setIsTimerDialogCreateVisible(false);
           }}
@@ -163,12 +216,13 @@ const Trackers = () => {
       <ButtonsGroup
         setIsCreateDialogVisible={setIsTimerDialogCreateVisible}
         isInProgress={isInProgress}
-        handleOnStopAll={stopCounter}
+        handleOnStopAll={handleOnStopAll}
       />
 
       <CustomDataTable
         className="mt-5"
-        value={trackers}
+        // value={trackers}
+        value={data}
         columns={[
           <Column
             field="time"
@@ -184,7 +238,8 @@ const Trackers = () => {
               <Actions
                 rowData={rowData}
                 handleOnStartCounter={handleOnStartCounter}
-                handleOnPauseCounter={stopCounter}
+                // handleOnPauseCounter={stopCounter}
+                handleOnPauseCounter={handleOnPauseCounter}
                 handleOnStopTracker={handleOnStopTracker}
                 handleOnEdit={handleOnEdit}
                 handleOnDelete={handleOnDelete}
@@ -195,19 +250,12 @@ const Trackers = () => {
         ]}
       />
 
-      <Paginator
-        first={first}
-        rows={rows}
-        totalRecords={50}
-        rowsPerPageOptions={[5, 10, 20]}
-        onPageChange={onPageChange}
-        template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
-        currentPageReportTemplate="{currentPage}"
+      <CustomPaginator
         className="mt-8"
-        prevPageLinkIcon={<i className="pi pi-caret-left"></i>}
-        nextPageLinkIcon={<i className="pi pi-caret-right"></i>}
-        lastPageLinkIcon={<i className="pi pi-step-forward"></i>}
-        firstPageLinkIcon={<i className="pi pi-step-backward"></i>}
+        first={currentPage * PAGE_SIZE}
+        rows={3}
+        totalRecords={totalRecords}
+        onPageChange={onPageChange}
       />
     </div>
   );

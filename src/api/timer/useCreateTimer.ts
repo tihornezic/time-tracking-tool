@@ -23,7 +23,7 @@ const useCreateTimer = () => {
           startDate: Date.now(),
           endDate: null,
           time: 0,
-          // status: active | closed
+          // status: active | in_progress | paused | closed | 
           status: "active",
         }),
       });

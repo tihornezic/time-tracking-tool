@@ -7,7 +7,7 @@ const useUpdateTimer = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const update = async ({ oldObj, newObj }: { oldObj: any; newObj?: any }) => {
+  const update = async ({ oldObj, newObj }: { oldObj?: any; newObj?: any }) => {
     try {
       const auth = getAuth();
       const user = auth.currentUser;

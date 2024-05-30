@@ -17,7 +17,7 @@ const useGetTimers = () => {
       const docSnap = await getDoc(userDocRef);
 
       if (docSnap.exists()) {
-        return docSnap.data().timers;
+        return docSnap.data().timers.sort((a, b) => b.startDate - a.startDate);
       } else {
         // docSnap.data() will be undefined in this case
         throw new Error("No such document!");

@@ -29,7 +29,7 @@ const ButtonsGroup = ({
       <Button
         label="Stop all"
         onClick={handleOnStopAll}
-        disabled={!isInProgress}
+        disabled={isInProgress}
         icon="pi pi-stop-circle"
         style={{
           backgroundColor: COLORS.primary,
