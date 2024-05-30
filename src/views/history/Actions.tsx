@@ -1,7 +1,12 @@
 import { Button } from "primereact/button";
-import React from "react";
 
-const Actions = () => {
+type ActionProps = {
+  rowData: any;
+  handleOnEdit: (rowData: any) => void;
+  handleOnDelete: (rowData: any) => void;
+};
+
+const Actions = ({ rowData, handleOnEdit, handleOnDelete }: ActionProps) => {
   return (
     <div>
       <Button
@@ -9,14 +14,14 @@ const Actions = () => {
         className="p-button-rounded p-button-text"
         size="large"
         style={{ color: "#5F6B8A" }}
-        // onClick={() => handleOnEdit(rowData)}
+        onClick={() => handleOnEdit(rowData)}
       />
 
       <Button
         icon="pi pi-trash"
         className="p-button-rounded p-button-text text-xl"
         style={{ color: "#5F6B8A" }}
-        // onClick={() => handleOnDelete(rowData)}
+        onClick={() => handleOnDelete(rowData)}
       />
     </div>
   );

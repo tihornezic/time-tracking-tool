@@ -34,6 +34,7 @@ const router = (user: User | null) => [
       },
       {
         path: "history",
+        // element: <History />
         element: (
           <ProtectedRoute condition={user === null} to="/">
             <History />

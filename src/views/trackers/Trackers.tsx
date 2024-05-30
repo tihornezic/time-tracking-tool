@@ -1,7 +1,7 @@
 import { Column } from "primereact/column";
 import { useEffect, useState } from "react";
 import { Paginator } from "primereact/paginator";
-import useGetTimer from "../../api/timer/useGetTimer";
+import useGetTimers from "../../api/timer/useGetTimers";
 import useUpdateTimer from "../../api/timer/useUpdateTimer";
 import useCounter from "../../hooks/useCounter";
 import Actions from "./components/Actions";
@@ -17,8 +17,8 @@ const Trackers = () => {
 
   const [trackers, setTrackers] = useState<any>([]);
 
-  const { get, isLoading } = useGetTimer();
-  const { update, error } = useUpdateTimer();
+  const { get } = useGetTimers();
+  const { update } = useUpdateTimer();
 
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(10);
@@ -41,6 +41,7 @@ const Trackers = () => {
 
   const handleUpdateUi = (rowData: any, seconds: number) => {
     // target which element in the array to update
+    // TODO: make this calculation beforehand, not on every second pass
     const itemIndex = trackers.findIndex((item: any) => item.id === rowData.id);
 
     if (itemIndex === -1) {
