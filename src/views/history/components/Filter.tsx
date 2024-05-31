@@ -8,7 +8,7 @@ import useFilterTrackers from "../../../api/tracker/useFilterTrackers";
 import { Tracker } from "../../../types/types";
 
 type Filters = {
-  onFilter: (rowData: Tracker) => void;
+  onFilter: (filteredTrackers: Tracker[]) => void;
 };
 
 const Filters = ({ onFilter }: Filters) => {
@@ -79,7 +79,7 @@ const Filters = ({ onFilter }: Filters) => {
 
   return (
     <div
-      className="filter flex gap-5 px-7 py-4 border-round-xl"
+      className="filter flex flex-column md:flex-row gap-5 px-7 py-4 border-round-xl"
       style={{ backgroundColor: COLORS.tertiary }}
     >
       <div className="flex flex-column flex-grow-1">

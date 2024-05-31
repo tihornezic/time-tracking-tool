@@ -167,7 +167,7 @@ const Trackers = () => {
   }, []);
 
   return (
-    <div className="flex flex-column w-8">
+    <div className="flex flex-column w-10 md:w-8">
       {isTimerDialogEditVisible && (
         <TimerDialogEditor
           rowToEdit={rowToEdit}

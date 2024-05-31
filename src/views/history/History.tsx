@@ -92,7 +92,7 @@ const History = () => {
   );
 
   return (
-    <div className="flex flex-column w-8">
+    <div className="flex flex-column w-10 md:w-8">
       <h3 className="text-2xl mb-7">Trackers History</h3>
 
       {isTimerDialogEditVisible && (
