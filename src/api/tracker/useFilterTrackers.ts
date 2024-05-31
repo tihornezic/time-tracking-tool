@@ -32,7 +32,7 @@ const useFilterTrackers = () => {
           .data()
           .trackers.filter(
             (tracker: Tracker) => tracker.status === EnumTrackerStatus.closed
-          );
+          ).sort((a: Tracker, b: Tracker) => b.startDate - a.startDate); // descending sort;
 
         if (description == "") {
           if (startDate && endDate) {
