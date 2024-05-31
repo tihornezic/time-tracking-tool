@@ -3,7 +3,7 @@ import { auth } from "../../firebase/firebase";
 
 const useSignOut = () => {
   const [isSigningOut, setIsSigningOut] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const signOut = async () => {
     setIsSigningOut(true);
@@ -11,10 +11,11 @@ const useSignOut = () => {
 
     try {
       await auth.signOut();
-      console.log("User signed out!");
-    } catch (err: any) {
-      setError(err.message);
-      console.error("Error signing out:", err.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+        throw new Error(error.message);
+      }
     } finally {
       setIsSigningOut(false);
     }

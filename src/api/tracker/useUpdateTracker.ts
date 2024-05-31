@@ -1,31 +1,36 @@
 import { getAuth } from "firebase/auth";
-import { arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import { useState } from "react";
 import { db } from "../../firebase/firebase";
-import { v4 as uuidv4 } from "uuid";
+import { Tracker } from "../../types/types";
 
-const useCreateTimer = () => {
+const useUpdateTracker = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const create = async ({ description }: { description: string }) => {
+  const update = async ({
+    oldObj,
+    newObj,
+  }: {
+    oldObj?: Tracker;
+    newObj?: Tracker;
+  }) => {
     try {
       const auth = getAuth();
       const user = auth.currentUser;
 
       const userDocRef = doc(db, "users", user!.uid);
 
-      // this is actually create new timer!
+      // if no newObj got passed, delete only
+      if (oldObj !== undefined) {
+        await updateDoc(userDocRef, {
+          trackers: arrayRemove(oldObj),
+        });
+      }
+
+      // Then, add the new activity
       await updateDoc(userDocRef, {
-        timers: arrayUnion({
-          id: uuidv4(),
-          description: description,
-          startDate: Date.now(),
-          endDate: null,
-          time: 0,
-          // status: active | in_progress | paused | closed | 
-          status: "active",
-        }),
+        trackers: arrayUnion(newObj),
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -38,7 +43,7 @@ const useCreateTimer = () => {
     }
   };
 
-  return { create, isLoading, error };
+  return { update, isLoading, error };
 };
 
-export default useCreateTimer;
+export default useUpdateTracker;

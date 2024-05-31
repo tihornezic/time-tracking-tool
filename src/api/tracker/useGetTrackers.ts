@@ -2,8 +2,9 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import { getAuth } from "firebase/auth";
 import { useState } from "react";
+import { Tracker } from "../../types/types";
 
-const useGetTimers = () => {
+const useGetTrackers = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,7 +18,9 @@ const useGetTimers = () => {
       const docSnap = await getDoc(userDocRef);
 
       if (docSnap.exists()) {
-        return docSnap.data().timers.sort((a, b) => b.startDate - a.startDate);
+        return docSnap
+          .data()
+          .trackers.sort((a: Tracker, b: Tracker) => b.startDate - a.startDate); // descending sort
       } else {
         // docSnap.data() will be undefined in this case
         throw new Error("No such document!");
@@ -36,4 +39,4 @@ const useGetTimers = () => {
   return { get, isLoading, error };
 };
 
-export default useGetTimers;
+export default useGetTrackers;

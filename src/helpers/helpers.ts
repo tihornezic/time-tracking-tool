@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { Tracker } from "../types/types";
 
 // formats seconds to HH:mm:ss format
 export const formatTime = (totalSeconds: number) => {
@@ -6,35 +7,36 @@ export const formatTime = (totalSeconds: number) => {
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
 
-  const pad = (num) => String(num).padStart(2, "0");
+  const pad = (num: number) => String(num).padStart(2, "0");
 
   return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 };
 
-export const filterByStartDate = (array: any, startDate: string) => {
-  const formattedStartDate = format(new Date(startDate as string), "d.M.yyyy.");
+export const filterByStartDate = (array: Tracker[], startDate: Date) => {
+  const formattedStartDate = format(new Date(startDate), "d.M.yyyy.");
 
   const filters = array.filter(
-    (timer) => format(timer.startDate, "d.M.yyyy.") === formattedStartDate
+    (tracker) => format(tracker.startDate, "d.M.yyyy.") === formattedStartDate
   );
 
   return filters;
 };
 
-export const filterByEndDate = (array: any, endDate: string) => {
-  const formattedEndDate = format(new Date(endDate as string), "d.M.yyyy.");
+export const filterByEndDate = (array: Tracker[], endDate: Date) => {
+  const formattedEndDate = format(new Date(endDate as Date), "d.M.yyyy.");
 
   const filters = array.filter(
-    (timer) => format(timer.endDate, "d.M.yyyy.") === formattedEndDate
+    (tracker) =>
+      format(String(tracker.endDate), "d.M.yyyy.") === formattedEndDate
   );
 
   return filters;
 };
 
 export const filterByStartAndEndDate = (
-  array: any,
-  startDate: string,
-  endDate: string
+  array: Tracker[],
+  startDate: Date,
+  endDate: Date
 ) => {
   const startMillis = new Date(startDate).getTime();
   const endMillis = new Date(endDate).getTime();
@@ -53,8 +55,8 @@ export const filterByStartAndEndDate = (
   return span;
 };
 
-export const filterByDescription = (array: any, description: string) => {
-  return array.filter((timer) =>
-    timer.description.toLowerCase().includes(description.toLowerCase())
+export const filterByDescription = (array: Tracker[], description: string) => {
+  return array.filter((tracker) =>
+    tracker.description.toLowerCase().includes(description.toLowerCase())
   );
 };

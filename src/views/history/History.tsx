@@ -4,19 +4,23 @@ import { Column } from "primereact/column";
 import Actions from "./Actions";
 import { formatTime } from "../../helpers/helpers";
 import { format } from "date-fns";
-import useGetTimers from "../../api/timer/useGetTimers";
+import useGetTrackers from "../../api/tracker/useGetTrackers";
 import { ConfirmDialog } from "primereact/confirmdialog";
-import useUpdateTimer from "../../api/timer/useUpdateTimer";
+import useUpdateTracker from "../../api/tracker/useUpdateTracker";
 import TimerDialogEditor from "../trackers/components/TimerDialogEditor";
 import Filters from "./components/Filter";
 import CustomPaginator from "../../components/custom-paginator/CustomPaginator";
-import usePaginate from "../../api/timer/usePaginate";
+import usePaginate from "../../api/tracker/usePaginate";
+import { Tracker } from "../../types/types";
 
-const columns = (handleOnEdit: any, handleOnDelete: any) => [
+const columns = (
+  handleOnEdit: (rowData: Tracker) => void,
+  handleOnDelete: (rowData: Tracker) => void
+) => [
   <Column
     field="startDate"
     header="Date"
-    body={(rowData: any) => format(rowData.startDate, "d.M.yyyy.")}
+    body={(rowData: Tracker) => format(rowData.startDate, "d.M.yyyy.")}
   />,
 
   <Column field="description" header="Description" />,
@@ -29,7 +33,7 @@ const columns = (handleOnEdit: any, handleOnDelete: any) => [
 
   <Column
     header="Actions"
-    body={(rowData: any) => (
+    body={(rowData: Tracker) => (
       <Actions
         rowData={rowData}
         handleOnEdit={handleOnEdit}
@@ -42,37 +46,39 @@ const columns = (handleOnEdit: any, handleOnDelete: any) => [
 const PAGE_SIZE = 3;
 
 const History = () => {
-  const { get } = useGetTimers();
-  const { update } = useUpdateTimer();
-  const [historyTrackers, setHistoryTrackers] = useState<any>([]);
+  const { get } = useGetTrackers();
+  const { update } = useUpdateTracker();
+  const [historyTrackers, setHistoryTrackers] = useState<Tracker[]>([]);
 
   const [isTimerDialogEditVisible, setIsTimerDialogEditVisible] =
     useState(false);
   const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(false);
-  const [rowToEdit, setRowToEdit] = useState(10);
-  const [rowToDelete, setRowToDelete] = useState<any>();
+  const [rowToEdit, setRowToEdit] = useState<Tracker | undefined>(undefined);
+  const [rowToDelete, setRowToDelete] = useState<Tracker | undefined>(
+    undefined
+  );
 
   const getHistoryTrackers = async () => {
     const trackersData = await get();
 
     const closedTrackers = trackersData.filter(
-      (tracker: any) => tracker.status === "closed"
+      (tracker: Tracker) => tracker.status === "closed"
     );
 
     setHistoryTrackers(closedTrackers);
   };
 
-  const handleOnEdit = (rowData: any) => {
+  const handleOnEdit = (rowData: Tracker) => {
     setIsTimerDialogEditVisible(true);
     setRowToEdit(rowData);
   };
 
-  const handleOnDelete = (rowData: any) => {
+  const handleOnDelete = (rowData: Tracker) => {
     setIsDeleteDialogVisible(true);
     setRowToDelete(rowData);
   };
 
-  const handleOnFilter = (filteredTrackers: any) => {
+  const handleOnFilter = (filteredTrackers: Tracker[]) => {
     setHistoryTrackers(filteredTrackers);
   };
 
@@ -109,7 +115,7 @@ const History = () => {
         icon="pi pi-exclamation-triangle"
         accept={() => {
           update({
-            oldObj: { ...rowToDelete },
+            oldObj: { ...rowToDelete } as Tracker,
           });
 
           getHistoryTrackers();

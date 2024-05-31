@@ -9,11 +9,12 @@ import {
   useEffect,
   useState,
 } from "react";
-import useCreateTimer from "../../../api/timer/useCreateTimer";
-import useUpdateTimer from "../../../api/timer/useUpdateTimer";
+import useCreateTracker from "../../../api/tracker/useCreateTracker";
+import useUpdateTracker from "../../../api/tracker/useUpdateTracker";
+import { Tracker } from "../../../types/types";
 
 type TimerDialogEditorProps = {
-  rowToEdit?: any;
+  rowToEdit?: Tracker;
   isTimerDialogEditorVisible: boolean;
   setIsTimerDialogEditorVisible: Dispatch<SetStateAction<boolean>>;
   onSuccess: () => void;
@@ -25,8 +26,8 @@ const TimerDialogEditor = ({
   setIsTimerDialogEditorVisible,
   onSuccess,
 }: TimerDialogEditorProps) => {
-  const { create } = useCreateTimer();
-  const { update } = useUpdateTimer();
+  const { create } = useCreateTracker();
+  const { update } = useUpdateTracker();
 
   const [description, setDescription] = useState("");
 

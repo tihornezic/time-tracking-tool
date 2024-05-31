@@ -1,0 +1,5 @@
+.custom-paginator .p-paginator-current {
+  color: white;
+  background-color: #C4C5D7;
+  border-radius: 5px;
+}

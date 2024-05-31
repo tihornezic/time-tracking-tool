@@ -1,23 +1,24 @@
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { InputText } from "primereact/inputtext";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import COLORS from "../../../constants/colors";
 import "./filters.css";
-import useFilterTimers from "../../../api/timer/useFilterTimers";
+import useFilterTrackers from "../../../api/tracker/useFilterTrackers";
+import { Tracker } from "../../../types/types";
 
 type Filters = {
-  onFilter: (rowData: any) => void;
+  onFilter: (rowData: Tracker) => void;
 };
 
 const Filters = ({ onFilter }: Filters) => {
-  const { filter } = useFilterTimers();
+  const { filter } = useFilterTrackers();
 
-  const [startDate, setStartDate] = useState<any>(null);
-  const [endDate, setEndDate] = useState<any>(null);
-  const [description, setDescription] = useState<any>("");
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [description, setDescription] = useState("");
 
-  const clearDescription = async (e: any) => {
+  const clearDescription = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     setDescription("");
 
@@ -26,7 +27,9 @@ const Filters = ({ onFilter }: Filters) => {
     onFilter(filters);
   };
 
-  const handleOnChangeDescription = async (e: any) => {
+  const handleOnChangeDescription = async (
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
     setDescription(e.target.value);
 
     let filters = [];

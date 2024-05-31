@@ -8,8 +8,9 @@ import {
   filterByStartAndEndDate,
   filterByStartDate,
 } from "../../helpers/helpers";
+import { EnumTrackerStatus, Tracker } from "../../types/types";
 
-const useFilterTimers = () => {
+const useFilterTrackers = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,35 +20,39 @@ const useFilterTimers = () => {
   const userDocRef = doc(db, "users", user!.uid);
 
   const filter = async (
-    startDate?: string,
-    endDate?: string,
+    startDate?: Date,
+    endDate?: Date,
     description?: string
   ) => {
+    console.log(typeof startDate);
+
     try {
       const docSnap = await getDoc(userDocRef);
 
       if (docSnap.exists()) {
-        const closedTimers = docSnap
+        const closedTrackers = docSnap
           .data()
-          .timers.filter((timer) => timer.status === "closed");
+          .trackers.filter(
+            (tracker: Tracker) => tracker.status === EnumTrackerStatus.closed
+          );
 
         if (description == "") {
           if (startDate && endDate) {
-            return filterByStartAndEndDate(closedTimers, startDate, endDate);
+            return filterByStartAndEndDate(closedTrackers, startDate, endDate);
           } else if (startDate) {
-            return filterByStartDate(closedTimers, startDate);
+            return filterByStartDate(closedTrackers, startDate);
           } else if (endDate) {
-            return filterByEndDate(closedTimers, endDate);
+            return filterByEndDate(closedTrackers, endDate);
           } else {
-            // return all closedTimers if no description got passed
-            return closedTimers;
+            // return all closedTrackers if no description got passed
+            return closedTrackers;
           }
         }
 
         if (description && description !== "") {
           if (startDate && endDate) {
             const filters = filterByStartAndEndDate(
-              closedTimers,
+              closedTrackers,
               startDate,
               endDate
             );
@@ -56,17 +61,17 @@ const useFilterTimers = () => {
 
             return combined;
           } else if (startDate) {
-            const filters = filterByStartDate(closedTimers, startDate);
+            const filters = filterByStartDate(closedTrackers, startDate);
             const combined = filterByDescription(filters, description);
 
             return combined;
           } else if (endDate) {
-            const filters = filterByEndDate(closedTimers, endDate);
+            const filters = filterByEndDate(closedTrackers, endDate);
             const combined = filterByDescription(filters, description);
 
             return combined;
           } else {
-            const filters = filterByDescription(closedTimers, description);
+            const filters = filterByDescription(closedTrackers, description);
             return filters;
           }
         }
@@ -74,7 +79,7 @@ const useFilterTimers = () => {
         // find span
         if (startDate && endDate) {
           const filters = filterByStartAndEndDate(
-            closedTimers,
+            closedTrackers,
             startDate,
             endDate
           );
@@ -83,13 +88,13 @@ const useFilterTimers = () => {
         }
 
         if (startDate) {
-          const filters = filterByStartDate(closedTimers, startDate);
+          const filters = filterByStartDate(closedTrackers, startDate);
 
           return filters;
         }
 
         if (endDate) {
-          const filters = filterByEndDate(closedTimers, endDate);
+          const filters = filterByEndDate(closedTrackers, endDate);
 
           return filters;
         }
@@ -110,4 +115,4 @@ const useFilterTimers = () => {
   return { filter, isLoading, error };
 };
 
-export default useFilterTimers;
+export default useFilterTrackers;

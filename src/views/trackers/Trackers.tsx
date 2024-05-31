@@ -1,7 +1,7 @@
 import { Column } from "primereact/column";
 import { useEffect, useState } from "react";
-import useGetTimers from "../../api/timer/useGetTimers";
-import useUpdateTimer from "../../api/timer/useUpdateTimer";
+import useGetTrackers from "../../api/tracker/useGetTrackers";
+import useUpdateTracker from "../../api/tracker/useUpdateTracker";
 import useCounter from "../../hooks/useCounter";
 import Actions from "./components/Actions";
 import Heading from "./components/Heading";
@@ -11,16 +11,17 @@ import { ConfirmDialog } from "primereact/confirmdialog";
 import { formatTime } from "../../helpers/helpers";
 import CustomDataTable from "../../components/custon-data-table/CustomDataTable";
 import CustomPaginator from "../../components/custom-paginator/CustomPaginator";
-import usePaginate from "../../api/timer/usePaginate";
+import usePaginate from "../../api/tracker/usePaginate";
+import { EnumTrackerStatus, Tracker } from "../../types/types";
 
 const PAGE_SIZE = 3;
 
 const Trackers = () => {
   const { startCounter, stopCounter, isInProgress } = useCounter();
-  const { get } = useGetTimers();
-  const { update } = useUpdateTimer();
+  const { get } = useGetTrackers();
+  const { update } = useUpdateTracker();
 
-  const [trackers, setTrackers] = useState<any>([]);
+  const [trackers, setTrackers] = useState<Tracker[]>([]);
 
   const { data, totalRecords, currentPage, onPageChange } = usePaginate(
     trackers,
@@ -35,14 +36,12 @@ const Trackers = () => {
 
   const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(false);
 
-  const [rowToEdit, setRowToEdit] = useState(10);
-  const [rowToDelete, setRowToDelete] = useState<any>();
-
-  const [key, setKey] = useState(0);
+  const [rowToEdit, setRowToEdit] = useState<Tracker | undefined>();
+  const [rowToDelete, setRowToDelete] = useState<Tracker | undefined>();
 
   const handleOnSecondPass = (
-    rowData: any,
-    updatedItems: any,
+    rowData: Tracker,
+    updatedItems: Tracker[],
     seconds: number,
     itemIndex: number
   ) => {
@@ -52,7 +51,7 @@ const Trackers = () => {
 
     copy[itemIndex] = {
       ...copy[itemIndex],
-      time: seconds,
+      seconds: seconds,
       // status: "in_progress",
     };
 
@@ -62,19 +61,19 @@ const Trackers = () => {
       // if seconds is 0, treat the "old" value differently (you can adjust this logic as needed)
       update({
         oldObj: { ...rowData },
-        newObj: { ...rowData, time: seconds },
+        newObj: { ...rowData, seconds },
       });
     } else {
       // for all other seconds values, update both "old" and "s"
       update({
-        oldObj: { ...rowData, time: seconds - 1 },
-        newObj: { ...rowData, time: seconds },
+        oldObj: { ...rowData, seconds: seconds - 1 },
+        newObj: { ...rowData, seconds },
       });
     }
   };
 
-  const handleOnStartCounter = (rowData: any) => {
-    const itemIndex = trackers.findIndex((item: any) => item.id === rowData.id);
+  const handleOnStartCounter = (rowData: Tracker) => {
+    const itemIndex = trackers.findIndex((item) => item.id === rowData.id);
 
     if (itemIndex === -1) {
       return;
@@ -84,19 +83,19 @@ const Trackers = () => {
       if (index === itemIndex) {
         return {
           ...tracker,
-          status: "in_progress",
+          status: EnumTrackerStatus.in_progress,
         };
       } else {
         return {
           ...tracker,
-          status: "disabled",
+          status: EnumTrackerStatus.disabled,
         };
       }
     });
 
     setTrackers(updatedItems);
 
-    startCounter(rowData.time, (seconds) => {
+    startCounter(rowData.seconds, (seconds) => {
       console.log("seconds", seconds);
       handleOnSecondPass(rowData, updatedItems, seconds, itemIndex);
     });
@@ -108,17 +107,21 @@ const Trackers = () => {
     const trckrs = trackers.map((tracker) => {
       return {
         ...tracker,
-        status: "active",
+        status: EnumTrackerStatus.active,
       };
     });
 
     setTrackers(trckrs);
   };
 
-  const handleOnStopTracker = (rowData: any) => {
+  const handleOnStopTracker = (rowData: Tracker) => {
     update({
       oldObj: { ...rowData },
-      newObj: { ...rowData, status: "closed", endDate: Date.now() },
+      newObj: {
+        ...rowData,
+        status: EnumTrackerStatus.closed,
+        endDate: Date.now(),
+      },
     });
 
     getTrackers();
@@ -134,7 +137,7 @@ const Trackers = () => {
     trackers.forEach((tracker) =>
       update({
         oldObj: undefined,
-        newObj: { ...tracker, status: "closed" },
+        newObj: { ...tracker, status: EnumTrackerStatus.closed },
       })
     );
 
@@ -142,12 +145,12 @@ const Trackers = () => {
     // setKey((prevKey) => prevKey + 1);
   };
 
-  const handleOnEdit = (rowData: any) => {
+  const handleOnEdit = (rowData: Tracker) => {
     setIsTimerDialogEditVisible(true);
     setRowToEdit(rowData);
   };
 
-  const handleOnDelete = (rowData: any) => {
+  const handleOnDelete = (rowData: Tracker) => {
     setIsDeleteDialogVisible(true);
     setRowToDelete(rowData);
   };
@@ -156,7 +159,7 @@ const Trackers = () => {
     const trackersData = await get();
 
     const activeTrackers = trackersData.filter(
-      (tracker: any) => tracker.status === "active"
+      (tracker: Tracker) => tracker.status === "active"
     );
 
     setTrackers(activeTrackers);
@@ -202,12 +205,11 @@ const Trackers = () => {
         icon="pi pi-exclamation-triangle"
         accept={() => {
           update({
-            oldObj: { ...rowToDelete },
+            oldObj: { ...rowToDelete } as Tracker,
           });
 
           getTrackers();
         }}
-        // reject={reject}
       />
 
       <Heading />

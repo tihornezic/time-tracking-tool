@@ -1,9 +1,10 @@
 import { Button } from "primereact/button";
+import { Tracker } from "../../types/types";
 
 type ActionProps = {
-  rowData: any;
-  handleOnEdit: (rowData: any) => void;
-  handleOnDelete: (rowData: any) => void;
+  rowData: Tracker;
+  handleOnEdit: (rowData: Tracker) => void;
+  handleOnDelete: (rowData: Tracker) => void;
 };
 
 const Actions = ({ rowData, handleOnEdit, handleOnDelete }: ActionProps) => {

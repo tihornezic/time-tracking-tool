@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
+import { Tracker } from "../../types/types";
+import { PaginatorPageChangeEvent } from "primereact/paginator";
 
-const usePaginate = (array: any, pageSize: number) => {
+const usePaginate = (array: Tracker[], pageSize: number) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Tracker[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
 
   const [totalRecords, setTotalRecords] = useState(0);
 
-  const onPageChange = (event: any) => {
+  const onPageChange = (event: PaginatorPageChangeEvent) => {
     setCurrentPage(event.page);
   };
 

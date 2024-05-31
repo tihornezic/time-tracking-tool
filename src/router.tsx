@@ -5,6 +5,7 @@ import History from "./views/history/History";
 import Layout from "./views/layout/Layout";
 import ProtectedRoute from "./views/protected-route/ProtectedRoute";
 import Trackers from "./views/trackers/Trackers";
+import NotFound from "./views/not-found/NotFound";
 
 const router = (user: User | null) => [
   {
@@ -13,8 +14,7 @@ const router = (user: User | null) => [
     children: [
       {
         path: "*",
-        element: <p>not found</p>,
-        // element: <NotFound />,
+        element: <NotFound />,
       },
       {
         index: true,
@@ -34,7 +34,6 @@ const router = (user: User | null) => [
       },
       {
         path: "history",
-        // element: <History />
         element: (
           <ProtectedRoute condition={user === null} to="/">
             <History />

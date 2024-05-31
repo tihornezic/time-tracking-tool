@@ -1,20 +1,18 @@
 import { Button } from "primereact/button";
 import COLORS from "../../../constants/colors";
+import { Tracker } from "../../../types/types";
 
 type ActionProps = {
-  array?: any;
   isInProgress: boolean;
-  rowData: any;
-  handleOnStartCounter: (rowData: any) => void;
-  // handleOnPauseCounter: (rowData: any) => void;
+  rowData: Tracker;
+  handleOnStartCounter: (rowData: Tracker) => void;
   handleOnPauseCounter: () => void;
-  handleOnStopTracker: (rowData: any) => void;
-  handleOnEdit: (rowData: any) => void;
-  handleOnDelete: (rowData: any) => void;
+  handleOnStopTracker: (rowData: Tracker) => void;
+  handleOnEdit: (rowData: Tracker) => void;
+  handleOnDelete: (rowData: Tracker) => void;
 };
 
 const Actions = ({
-  array,
   isInProgress,
   rowData,
   handleOnStartCounter,
@@ -26,7 +24,6 @@ const Actions = ({
   return (
     <div>
       <Button
-        // icon={`pi ${isInProgress ? "pi-pause-circle" : "pi-play-circle"}`}
         icon={`pi ${
           rowData.status === "in_progress"
             ? "pi-pause-circle"
