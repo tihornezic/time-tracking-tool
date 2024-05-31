@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
+// the values should be put into a .env for security sake but I will leave it here for now
 const firebaseConfig = {
   apiKey: "AIzaSyCoLPUS0OhawUynnRm_UKNuPEsl_5pSZGo",
   authDomain: "time-tracking-tool-b70b0.firebaseapp.com",

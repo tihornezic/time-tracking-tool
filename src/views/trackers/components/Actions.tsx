@@ -31,11 +31,6 @@ const Actions = ({
         className="p-button-rounded p-button-text"
         size="large"
         style={{ color: COLORS.secondary }}
-        // onClick={
-        //   isInProgress
-        //     ? () => handleOnPauseCounter()
-        //     : () => handleOnStartCounter(rowData)
-        // }
         onClick={
           rowData.status === "in_progress"
             ? () => handleOnPauseCounter()
@@ -48,7 +43,6 @@ const Actions = ({
         className="p-button-rounded p-button-text"
         size="large"
         style={{ color: "#5F6B8A" }}
-        // disabled={isInProgress}
         disabled={
           rowData.status === "disabled" || rowData.status === "in_progress"
             ? true
@@ -62,7 +56,6 @@ const Actions = ({
         className="p-button-rounded p-button-text"
         size="large"
         style={{ color: "#5F6B8A" }}
-        // disabled={isInProgress}
         disabled={
           rowData.status === "disabled" || rowData.status === "in_progress"
             ? true
@@ -75,7 +68,6 @@ const Actions = ({
         icon="pi pi-trash"
         className="p-button-rounded p-button-text text-xl"
         style={{ color: "#5F6B8A" }}
-        // disabled={isInProgress}
         disabled={
           rowData.status === "disabled" || rowData.status === "in_progress"
             ? true
