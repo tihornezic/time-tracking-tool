@@ -47,8 +47,6 @@ const Trackers = () => {
   ) => {
     const copy = [...updatedItems];
 
-    console.log("rowData", rowData);
-
     copy[itemIndex] = {
       ...copy[itemIndex],
       seconds: seconds,
@@ -96,7 +94,6 @@ const Trackers = () => {
     setTrackers(updatedItems);
 
     startCounter(rowData.seconds, (seconds) => {
-      console.log("seconds", seconds);
       handleOnSecondPass(rowData, updatedItems, seconds, itemIndex);
     });
   };
@@ -229,7 +226,7 @@ const Trackers = () => {
           <Column
             field="time"
             header="Time logged"
-            body={(rowData) => formatTime(rowData.time)}
+            body={(rowData) => formatTime(rowData.seconds)}
           />,
 
           <Column field="description" header="Description" />,

@@ -41,8 +41,6 @@ export const filterByStartAndEndDate = (
   const startMillis = new Date(startDate).getTime();
   const endMillis = new Date(endDate).getTime();
 
-  // console.log("startMillis", startMillis);
-
   const span = array.filter((item) => {
     const itemStartDateMillis = item.startDate;
 

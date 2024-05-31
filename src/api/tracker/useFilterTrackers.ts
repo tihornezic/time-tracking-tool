@@ -24,8 +24,6 @@ const useFilterTrackers = () => {
     endDate?: Date,
     description?: string
   ) => {
-    console.log(typeof startDate);
-
     try {
       const docSnap = await getDoc(userDocRef);
 

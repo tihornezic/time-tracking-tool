@@ -28,7 +28,7 @@ const columns = (
   <Column
     field="time"
     header="Time logged"
-    body={(rowData) => formatTime(rowData.time)}
+    body={(rowData) => formatTime(rowData.seconds)}
   />,
 
   <Column
