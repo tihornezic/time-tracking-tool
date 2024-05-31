@@ -2,6 +2,15 @@ import { useRef, useState } from "react";
 
 let interval: ReturnType<typeof setInterval>;
 
+export type UseCounterReturn = {
+  isInProgress: boolean;
+  startCounter: (
+    initialVal?: number,
+    onSecondPass?: (newSeconds: number) => void
+  ) => void;
+  stopCounter: () => void;
+};
+
 const useCounter = () => {
   const counterRef = useRef(0);
   const secondsRef = useRef<number | undefined>(undefined);
@@ -37,7 +46,13 @@ const useCounter = () => {
     clearInterval(interval);
   };
 
-  return { isInProgress, startCounter, stopCounter };
+  const returnObj: UseCounterReturn = {
+    isInProgress,
+    startCounter,
+    stopCounter,
+  };
+
+  return returnObj;
 };
 
 export default useCounter;

@@ -57,7 +57,6 @@ const TimerDialogEditor = ({
     <Dialog
       header={rowToEdit ? "Edit timer" : "Create timer"}
       visible={isTimerDialogEditorVisible}
-      // style={{ width: "30vw", height: "40vh" }}
       className="sm:w-10 md:w-6 lg:w-4"
       onHide={() => {
         if (!isTimerDialogEditorVisible) return;

@@ -11,7 +11,9 @@ import TimerDialogEditor from "../trackers/components/TimerDialogEditor";
 import Filters from "./components/Filter";
 import CustomPaginator from "../../components/custom-paginator/CustomPaginator";
 import usePaginate from "../../api/tracker/usePaginate";
-import { Tracker } from "../../types/types";
+import { EnumTrackerStatus, Tracker } from "../../types/types";
+
+const PAGE_SIZE = 3;
 
 const columns = (
   handleOnEdit: (rowData: Tracker) => void,
@@ -43,16 +45,21 @@ const columns = (
   />,
 ];
 
-const PAGE_SIZE = 3;
-
 const History = () => {
   const { get } = useGetTrackers();
   const { update } = useUpdateTracker();
+
   const [historyTrackers, setHistoryTrackers] = useState<Tracker[]>([]);
+
+  const { data, totalRecords, currentPage, onPageChange } = usePaginate(
+    historyTrackers,
+    PAGE_SIZE
+  );
 
   const [isTimerDialogEditVisible, setIsTimerDialogEditVisible] =
     useState(false);
   const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(false);
+
   const [rowToEdit, setRowToEdit] = useState<Tracker | undefined>(undefined);
   const [rowToDelete, setRowToDelete] = useState<Tracker | undefined>(
     undefined
@@ -62,7 +69,7 @@ const History = () => {
     const trackersData = await get();
 
     const closedTrackers = trackersData.filter(
-      (tracker: Tracker) => tracker.status === "closed"
+      (tracker: Tracker) => tracker.status === EnumTrackerStatus.closed
     );
 
     setHistoryTrackers(closedTrackers);
@@ -85,11 +92,6 @@ const History = () => {
   useEffect(() => {
     getHistoryTrackers();
   }, []);
-
-  const { data, totalRecords, currentPage, onPageChange } = usePaginate(
-    historyTrackers,
-    PAGE_SIZE
-  );
 
   return (
     <div className="flex flex-column w-10 md:w-8">

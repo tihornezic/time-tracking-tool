@@ -3,7 +3,6 @@ import COLORS from "../../../constants/colors";
 import { Tracker } from "../../../types/types";
 
 type ActionProps = {
-  isInProgress: boolean;
   rowData: Tracker;
   handleOnStartCounter: (rowData: Tracker) => void;
   handleOnPauseCounter: () => void;
@@ -13,7 +12,6 @@ type ActionProps = {
 };
 
 const Actions = ({
-  isInProgress,
   rowData,
   handleOnStartCounter,
   handleOnPauseCounter,
@@ -33,8 +31,13 @@ const Actions = ({
         className="p-button-rounded p-button-text"
         size="large"
         style={{ color: COLORS.secondary }}
+        // onClick={
+        //   isInProgress
+        //     ? () => handleOnPauseCounter()
+        //     : () => handleOnStartCounter(rowData)
+        // }
         onClick={
-          isInProgress
+          rowData.status === "in_progress"
             ? () => handleOnPauseCounter()
             : () => handleOnStartCounter(rowData)
         }
@@ -45,7 +48,12 @@ const Actions = ({
         className="p-button-rounded p-button-text"
         size="large"
         style={{ color: "#5F6B8A" }}
-        disabled={isInProgress}
+        // disabled={isInProgress}
+        disabled={
+          rowData.status === "disabled" || rowData.status === "in_progress"
+            ? true
+            : false
+        }
         onClick={() => handleOnStopTracker(rowData)}
       />
 
@@ -54,7 +62,12 @@ const Actions = ({
         className="p-button-rounded p-button-text"
         size="large"
         style={{ color: "#5F6B8A" }}
-        disabled={isInProgress}
+        // disabled={isInProgress}
+        disabled={
+          rowData.status === "disabled" || rowData.status === "in_progress"
+            ? true
+            : false
+        }
         onClick={() => handleOnEdit(rowData)}
       />
 
@@ -62,7 +75,12 @@ const Actions = ({
         icon="pi pi-trash"
         className="p-button-rounded p-button-text text-xl"
         style={{ color: "#5F6B8A" }}
-        disabled={isInProgress}
+        // disabled={isInProgress}
+        disabled={
+          rowData.status === "disabled" || rowData.status === "in_progress"
+            ? true
+            : false
+        }
         onClick={() => handleOnDelete(rowData)}
       />
     </div>
