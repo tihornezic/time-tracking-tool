@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { EnumTrackerStatus, Tracker } from "../../types/types";
 
 const useCreateTracker = () => {
+  // TODO: the isLoading and error should be made into a custom hook
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
